@@ -7,7 +7,9 @@ package librarymanagementsystem.interfaces;
 /**
  *
  * @author Alvin
+ * run code ini untuk memulai
  */
 public interface Borrowable {
-    
+    void borrow();
+    void returnItem();
 }

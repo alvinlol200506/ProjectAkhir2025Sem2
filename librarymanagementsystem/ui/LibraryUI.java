@@ -3,7 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package librarymanagementsystem.ui;
-
+import javax.swing.table.DefaultTableModel;
+import librarymanagementsystem.models.*;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Alvin
@@ -15,6 +17,37 @@ public class LibraryUI extends javax.swing.JFrame {
      */
     public LibraryUI() {
         initComponents();
+        // Muat data saat aplikasi dimulai
+    librarymanagementsystem.services.LibraryService.loadData();
+    updateBookTable();
+    updateMemberTable();
+    updateTotalBooksLabel();
+    updateTotalMembersLabel();
+
+    // Tambah action listener untuk addMemberButton
+    addMemberButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            addMemberButtonActionPerformed(evt);
+        }
+    });
+    
+    // Simpan data saat aplikasi ditutup
+    addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            librarymanagementsystem.services.LibraryService.saveData();
+            System.exit(0);
+        }
+    });
+
+    // Simpan data saat aplikasi ditutup
+    addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            librarymanagementsystem.services.LibraryService.saveData();
+            System.exit(0);
+        }
+    });
     }
 
     /**
@@ -33,19 +66,23 @@ public class LibraryUI extends javax.swing.JFrame {
         totalMembersLabel = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        javax.swing.JTextField bookIDField = new javax.swing.JTextField();
-        javax.swing.JTextField bookTitleField = new javax.swing.JTextField();
+        bookIDField = new javax.swing.JTextField();
+        bookTitleField = new javax.swing.JTextField();
         javax.swing.JButton addBookButton = new javax.swing.JButton();
         javax.swing.JButton removeBookButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         bookTable = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        javax.swing.JTextField memberIDField = new javax.swing.JTextField();
-        javax.swing.JTextField memberNameField = new javax.swing.JTextField();
-        javax.swing.JButton addMemberButton = new javax.swing.JButton();
+        memberIDField = new javax.swing.JTextField();
+        memberNameField = new javax.swing.JTextField();
+        addMemberButton = new javax.swing.JButton();
         javax.swing.JButton removeMemberButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         memberTable = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -70,17 +107,13 @@ public class LibraryUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(246, 246, 246)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(totalBooksLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(totalMembersLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 290, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -103,6 +136,11 @@ public class LibraryUI extends javax.swing.JFrame {
         jTabbedPane1.addTab("mainMenuPanel", jPanel1);
 
         addBookButton.setText("Add Book");
+        addBookButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBookButtonActionPerformed(evt);
+            }
+        });
 
         removeBookButton.setText("Remove Book");
 
@@ -116,12 +154,16 @@ public class LibraryUI extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(bookTable);
 
+        jLabel5.setText("ID");
+
+        jLabel6.setText("Title");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(0, 41, Short.MAX_VALUE)
+                .addGap(0, 54, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -136,7 +178,9 @@ public class LibraryUI extends javax.swing.JFrame {
                                 .addComponent(addBookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(removeBookButton)
-                                .addGap(11, 11, 11)))
+                                .addGap(11, 11, 11))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
                         .addGap(195, 195, 195))))
         );
 
@@ -145,11 +189,15 @@ public class LibraryUI extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(45, 45, 45)
+                .addGap(23, 23, 23)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bookIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addGap(10, 10, 10)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bookTitleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addBookButton)
                     .addComponent(removeBookButton))
@@ -167,6 +215,7 @@ public class LibraryUI extends javax.swing.JFrame {
         });
 
         addMemberButton.setText("Add Member");
+        addMemberButton.setFocusable(false);
         addMemberButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addMemberButtonActionPerformed(evt);
@@ -174,6 +223,7 @@ public class LibraryUI extends javax.swing.JFrame {
         });
 
         removeMemberButton.setText("Remove Member");
+        removeMemberButton.setFocusable(false);
 
         memberTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -185,12 +235,16 @@ public class LibraryUI extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(memberTable);
 
+        jLabel3.setText("ID");
+
+        jLabel4.setText("Name");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(0, 41, Short.MAX_VALUE)
+                .addGap(0, 54, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -204,7 +258,9 @@ public class LibraryUI extends javax.swing.JFrame {
                                 .addComponent(removeMemberButton))
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(memberNameField, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(memberIDField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(memberIDField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addGap(187, 187, 187))))
         );
 
@@ -213,11 +269,15 @@ public class LibraryUI extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(58, 58, 58)
+                .addGap(36, 36, 36)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(memberIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(8, 8, 8)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(memberNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addMemberButton)
                     .addComponent(removeMemberButton))
@@ -255,24 +315,84 @@ public class LibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_memberNameFieldActionPerformed
 
     private void addMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMemberButtonActionPerformed
-         // TODO add your handling code here:
+    String id = memberIDField.getText().trim();
+    String name = memberNameField.getText().trim();
+
+    
+    if (id.isEmpty() || name.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Tolong diisi semua ya :)", "Bro ada yang belum diisi", JOptionPane.ERROR_MESSAGE);
+    } else {
+        int result = JOptionPane.showConfirmDialog(null, "Yakin sudah mengisi dengan benar?", "Attention", JOptionPane.OK_CANCEL_OPTION); // fitur "meyakinkan untuk submit" thingy
+            if (result == JOptionPane.OK_OPTION) {
+        librarymanagementsystem.services.LibraryService.addMember(id, name);
+        updateMemberTable();
+        updateTotalMembersLabel();
+        memberIDField.setText("");
+        memberNameField.setText("");
+            }
+    }
     }//GEN-LAST:event_addMemberButtonActionPerformed
 
+    private void updateMemberTable() {
+    DefaultTableModel model = (DefaultTableModel) memberTable.getModel();
+    model.setRowCount(0);
+    for (Member member : librarymanagementsystem.services.LibraryService.getMembers()) {
+        model.addRow(new Object[]{member.getId(), member.getName()});
+    }
+}
+    
+    private void updateTotalMembersLabel() {
+    totalMembersLabel.setText("Total Members: " + librarymanagementsystem.services.LibraryService.getTotalMembers());
+}
+    
+    private void addBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBookButtonActionPerformed
+        String id = bookIDField.getText().trim();
+        String title = bookTitleField.getText().trim();
+
+        if (!id.isEmpty() && !title.isEmpty()) {
+            librarymanagementsystem.services.LibraryService.addBook(id, title);
+            updateBookTable();
+            updateTotalBooksLabel();
+            bookIDField.setText("");
+            bookTitleField.setText("");
+        }
+    }//GEN-LAST:event_addBookButtonActionPerformed
+
+    private void updateBookTable() {
+        DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+        model.setRowCount(0); // Clear table
+        for (Book book : librarymanagementsystem.services.LibraryService.getBooks()) {
+            model.addRow(new Object[]{book.getId(), book.getTitle()});
+        }
+    }
+
+    private void updateTotalBooksLabel() {
+        totalBooksLabel.setText("Total Books: " + librarymanagementsystem.services.LibraryService.getTotalBooks());
+    }
     /**
      * @param args the command line arguments
      */
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addMemberButton;
+    private javax.swing.JTextField bookIDField;
     private javax.swing.JTable bookTable;
+    private javax.swing.JTextField bookTitleField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField memberIDField;
+    private javax.swing.JTextField memberNameField;
     private javax.swing.JTable memberTable;
     private static javax.swing.JLabel totalBooksLabel;
     private static javax.swing.JLabel totalMembersLabel;

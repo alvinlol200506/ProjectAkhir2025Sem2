@@ -4,13 +4,17 @@
  */
 package librarymanagementsystem;
 import librarymanagementsystem.ui.LibraryUI;
+import javax.swing.UIManager;
 /**
  *
  * @author Alvin
  */
 public class Main {
     public static void main(String[] args){
-    java.awt.EventQueue.invokeLater(() -> {
+    UIManager.put("Button.focusPainted", Boolean.FALSE);
+
+        // Run the GUI on the Event Dispatch Thread (EDT)
+        java.awt.EventQueue.invokeLater(() -> {
             new LibraryUI().setVisible(true);
         });
     }

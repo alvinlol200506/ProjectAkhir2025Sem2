@@ -4,8 +4,7 @@
  */
 package librarymanagementsystem.services;
 
-import librarymanagementsystem.models.Book;
-import librarymanagementsystem.models.Member;
+import librarymanagementsystem.models.*;
 import java.io.*;
 import java.util.ArrayList;
 /**
@@ -15,21 +14,25 @@ import java.util.ArrayList;
 public class LibraryService {
     private static ArrayList<Book> books = new ArrayList<>();
     private static ArrayList<Member> members = new ArrayList<>();
+    private static ArrayList<Transaction> transactions = new ArrayList<>();
     private static int totalBooks = 0;
     private static int totalMembers = 0;
     private static final String BOOKS_FILE = "books.csv";
     private static final String MEMBERS_FILE = "members.csv";
+    private static final String TRANSACTIONS_FILE = "transactions.csv";
 
     // Muat data saat aplikasi mulai
     public static void loadData() {
         loadBooks();
         loadMembers();
+        loadTransactions();
     }
 
     // Simpan data saat aplikasi ditutup
     public static void saveData() {
         saveBooks();
         saveMembers();
+        saveTransactions();
     }
 
     private static void loadBooks() {
@@ -37,11 +40,14 @@ public class LibraryService {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length == 2) {
-                    Book book = new Book(data[0], data[1]);
-                    books.add(book);
-                    totalBooks++;
+                if (data.length == 3 && data[0].equals("novel")) {
+                    books.add(new Novel(data[1], data[2], "Unknown Author"));
+                } else if (data.length == 3 && data[0].equals("textbook")) {
+                    books.add(new Textbook(data[1], data[2], Integer.parseInt(data[2].split(" ")[0])));
+                } else if (data.length == 2) {
+                    books.add(new Book(data[0], data[1]));
                 }
+                totalBooks++;
             }
         } catch (IOException e) {
             // File belum ada saat pertama kali, ini normal
@@ -51,7 +57,13 @@ public class LibraryService {
     private static void saveBooks() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKS_FILE))) {
             for (Book book : books) {
-                writer.write(book.getId() + "," + book.getTitle());
+                if (book instanceof Novel) {
+                    writer.write("novel," + book.getId() + "," + book.getTitle());
+                } else if (book instanceof Textbook) {
+                    writer.write("textbook," + book.getId() + "," + book.getTitle());
+                } else {
+                    writer.write(book.getId() + "," + book.getTitle());
+                }
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -86,17 +98,48 @@ public class LibraryService {
         }
     }
 
-    public static void addBook(String id, String title) {
-        Book book = new Book(id, title);
+    private static void loadTransactions() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTIONS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Implementasi load transaction nanti (butuh parsing tambahan)
+            }
+        } catch (IOException e) {
+            // File belum ada, ini normal
+        }
+    }
+    
+    private static void saveTransactions() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TRANSACTIONS_FILE))) {
+            for (Transaction transaction : transactions) {
+                writer.write(transaction.getTransactionId() + "," + transaction.getBook().getId() + "," + transaction.getMember().getId());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void addBook(String id, String title, String type) {
+        Book book;
+        if ("novel".equalsIgnoreCase(type)) {
+            book = new Novel(id, title, "Unknown Author");
+        } else if ("textbook".equalsIgnoreCase(type)) {
+            book = new Textbook(id, title, 1);
+        } else {
+            book = new Book(id, title);
+        }
         books.add(book);
         totalBooks++;
-        saveBooks(); // Simpan setiap kali ada perubahan
+        saveBooks();
     }
 
     public static void removeBook(String id) {
-        books.removeIf(book -> book.getId().equals(id));
-        totalBooks--;
-        saveBooks();
+        boolean removed = books.removeIf(book -> book.getId().equals(id));
+        if (removed) {
+            totalBooks--;
+            saveBooks();
+        }
     }
 
     public static void addMember(String id, String name) {
@@ -110,6 +153,12 @@ public class LibraryService {
         members.removeIf(member -> member.getId().equals(id));
         totalMembers--;
         saveMembers();
+    }
+    
+    public static void addTransaction(String transactionId, Book book, Member member) {
+        Transaction transaction = new Transaction(transactionId, book, member);
+        transactions.add(transaction);
+        saveTransactions();
     }
 
     public static ArrayList<Book> getBooks() {

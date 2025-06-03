@@ -8,6 +8,24 @@ package librarymanagementsystem.models;
  *
  * @author Alvin
  */
-public class Textbook {
-    
+public class Textbook extends Book {
+    private int edition;
+
+    public Textbook(String id, String title, int edition) {
+        super(id, title); // Memanggil constructor Book
+        this.edition = edition;
+    }
+
+    public int getEdition() {
+        return edition;
+    }
+
+    public void setEdition(int edition) {
+        this.edition = edition;
+    }
+
+    @Override
+    public String getDetails() {
+        return "Textbook: " + getTitle() + " (Edition: " + edition + ", ID: " + getId() + ")";
+    }
 }

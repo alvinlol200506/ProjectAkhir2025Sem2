@@ -206,9 +206,9 @@ public class LibraryUI extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(bookTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bookIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -243,6 +243,11 @@ public class LibraryUI extends javax.swing.JFrame {
 
         removeMemberButton.setText("Remove Member");
         removeMemberButton.setFocusable(false);
+        removeMemberButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeMemberButtonActionPerformed(evt);
+            }
+        });
 
         memberTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -363,29 +368,33 @@ public class LibraryUI extends javax.swing.JFrame {
 }
     
     private void addBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBookButtonActionPerformed
-        String id = bookIDField.getText().trim();
+    System.out.println("addBookButtonActionPerformed dipanggil");
+    String id = bookIDField.getText().trim();
     String title = bookTitleField.getText().trim();
     String type = (String) bookTypeComboBox.getSelectedItem();
 
     if (id.isEmpty() || title.isEmpty()) {
+        System.out.println("Validasi gagal: ID atau Title kosong");
         JOptionPane.showMessageDialog(this, "Tolong diisi semua ya :)", "Bro ada yang belum diisi", JOptionPane.ERROR_MESSAGE);
         bookIDField.requestFocusInWindow();
     } else {
+        System.out.println("Validasi sukses, menambah buku: " + id + ", " + title + ", " + type);
         librarymanagementsystem.services.LibraryService.addBook(id, title, type);
         updateBookTable();
         updateTotalBooksLabel();
         bookIDField.setText("");
         bookTitleField.setText("");
+        bookIDField.requestFocusInWindow(); // Pastikan fokus pindah
+        bookTable.clearSelection(); // Bersihkan seleksi tabel
     }
     }//GEN-LAST:event_addBookButtonActionPerformed
 
     private void bookTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookTypeComboBoxActionPerformed
-        String id = bookIDField.getText().trim();
+    String id = bookIDField.getText().trim();
     String title = bookTitleField.getText().trim();
     String type = (String) bookTypeComboBox.getSelectedItem();
 
     if (id.isEmpty() || title.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Tolong diisi semua ya :)", "Bro ada yang belum diisi", JOptionPane.ERROR_MESSAGE);
         bookIDField.requestFocusInWindow();
     } else {
         librarymanagementsystem.services.LibraryService.addBook(id, title, type);
@@ -397,17 +406,43 @@ public class LibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_bookTypeComboBoxActionPerformed
 
     private void removeBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBookButtonActionPerformed
-        int selectedRow = bookTable.getSelectedRow();
+    bookTable.requestFocusInWindow();
+    int selectedRow = bookTable.getSelectedRow();
+    System.out.println("Baris yang dipilih saat remove: " + selectedRow);
+    
     if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Pilih buku dulu ya :)", "Belum ada buku dipilih", JOptionPane.ERROR_MESSAGE);
-        return;
-    } else {
-        String id = (String) bookTable.getValueAt(selectedRow, 0); // Kolom ID
+        System.out.println("Tidak ada baris dipilih, tidak melakukan apa-apa");
+        return; // Langsung return tanpa popup
+    }
+
+    String id = (String) bookTable.getValueAt(selectedRow, 0);
+    System.out.println("Menghapus buku dengan ID: " + id);
     librarymanagementsystem.services.LibraryService.removeBook(id);
     updateBookTable();
     updateTotalBooksLabel();
-    }
+    bookTable.clearSelection();
+    bookIDField.requestFocusInWindow();
     }//GEN-LAST:event_removeBookButtonActionPerformed
+
+    private void removeMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMemberButtonActionPerformed
+    int selectedRow = memberTable.getSelectedRow();
+    System.out.println("Baris yang dipilih saat remove member: " + selectedRow);
+    
+    if (selectedRow == -1) {
+        System.out.println("Tidak ada member dipilih, tidak melakukan apa-apa");
+        return;
+    }
+
+    String id = (String) memberTable.getValueAt(selectedRow, 0); // Kolom ID
+    System.out.println("Menghapus member dengan ID: " + id);
+    librarymanagementsystem.services.LibraryService.removeMember(id);
+    updateMemberTable();
+    updateTotalMembersLabel();
+    updateBookTable(); // Perbarui tabel buku karena beberapa buku dihapus
+    updateTotalBooksLabel();
+    memberTable.clearSelection();
+    memberIDField.requestFocusInWindow();
+    }//GEN-LAST:event_removeMemberButtonActionPerformed
     
     
     

@@ -9,12 +9,12 @@ package librarymanagementsystem.abstracts;
  * @author Alvin
  */
 public abstract class LibraryItem {
-    private String id;
-    private String title;
+    protected String id;
+    protected String details;
 
-    public LibraryItem(String id, String title) {
+    public LibraryItem(String id, String details) {
         this.id = id;
-        this.title = title;
+        this.details = details;
     }
 
     public String getId() {
@@ -22,7 +22,7 @@ public abstract class LibraryItem {
     }
 
     public String getTitle() {
-        return title;
+        return details;
     }
 
     // Metode abstrak untuk polymorphism

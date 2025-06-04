@@ -14,61 +14,63 @@ import java.util.ArrayList;
 public class LibraryService {
     private static ArrayList<Book> books = new ArrayList<>();
     private static ArrayList<Member> members = new ArrayList<>();
-    private static ArrayList<Transaction> transactions = new ArrayList<>();
     private static int totalBooks = 0;
     private static int totalMembers = 0;
     private static final String BOOKS_FILE = "books.csv";
     private static final String MEMBERS_FILE = "members.csv";
-    private static final String TRANSACTIONS_FILE = "transactions.csv";
 
     // Muat data saat aplikasi mulai
     public static void loadData() {
         loadBooks();
         loadMembers();
-        loadTransactions();
     }
 
     // Simpan data saat aplikasi ditutup
     public static void saveData() {
         saveBooks();
         saveMembers();
-        saveTransactions();
     }
 
     private static void loadBooks() {
         try (BufferedReader reader = new BufferedReader(new FileReader(BOOKS_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] data = line.split(",");
+            try {
                 if (data.length == 3 && data[0].equals("novel")) {
                     books.add(new Novel(data[1], data[2], "Unknown Author"));
                 } else if (data.length == 3 && data[0].equals("textbook")) {
-                    books.add(new Textbook(data[1], data[2], Integer.parseInt(data[2].split(" ")[0])));
+                    // Ubah format: textbook,ID,judul,edisi
+                    books.add(new Textbook(data[1], data[2], Integer.parseInt(data[2]))); // Ambil edisi langsung
                 } else if (data.length == 2) {
                     books.add(new Book(data[0], data[1]));
                 }
                 totalBooks++;
+            } catch (NumberFormatException e) {
+                System.out.println("Error parsing book data: " + line + " | " + e.getMessage());
+                // Lewati baris yang salah
             }
-        } catch (IOException e) {
-            // File belum ada saat pertama kali, ini normal
         }
+    } catch (IOException e) {
+        // File belum ada saat pertama kali, ini normal
+    }
     }
 
     private static void saveBooks() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKS_FILE))) {
-            for (Book book : books) {
-                if (book instanceof Novel) {
-                    writer.write("novel," + book.getId() + "," + book.getTitle());
-                } else if (book instanceof Textbook) {
-                    writer.write("textbook," + book.getId() + "," + book.getTitle());
-                } else {
-                    writer.write(book.getId() + "," + book.getTitle());
-                }
-                writer.newLine();
+       try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKS_FILE))) {
+        for (Book book : books) {
+            if (book instanceof Novel) {
+                writer.write("novel," + book.getId() + "," + book.getTitle());
+            } else if (book instanceof Textbook) {
+                writer.write("textbook," + book.getId() + "," + ((Textbook) book).getEdition());
+            } else {
+                writer.write(book.getId() + "," + book.getTitle());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            writer.newLine();
         }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     }
 
     private static void loadMembers() {
@@ -98,40 +100,19 @@ public class LibraryService {
         }
     }
 
-    private static void loadTransactions() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTIONS_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Implementasi load transaction nanti (butuh parsing tambahan)
-            }
-        } catch (IOException e) {
-            // File belum ada, ini normal
-        }
-    }
-    
-    private static void saveTransactions() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TRANSACTIONS_FILE))) {
-            for (Transaction transaction : transactions) {
-                writer.write(transaction.getTransactionId() + "," + transaction.getBook().getId() + "," + transaction.getMember().getId());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     
     public static void addBook(String id, String title, String type) {
         Book book;
-        if ("novel".equalsIgnoreCase(type)) {
-            book = new Novel(id, title, "Unknown Author");
-        } else if ("textbook".equalsIgnoreCase(type)) {
-            book = new Textbook(id, title, 1);
-        } else {
-            book = new Book(id, title);
-        }
-        books.add(book);
-        totalBooks++;
-        saveBooks();
+    if ("novel".equalsIgnoreCase(type)) {
+        book = new Novel(id, title, "Unknown Author");
+    } else if ("textbook".equalsIgnoreCase(type)) {
+        book = new Textbook(id, title, 1); // Default edisi 1
+    } else {
+        book = new Book(id, title);
+    }
+    books.add(book);
+    totalBooks++;
+    saveBooks();
     }
 
     public static void removeBook(String id) {
@@ -150,16 +131,28 @@ public class LibraryService {
     }
 
     public static void removeMember(String id) {
-        members.removeIf(member -> member.getId().equals(id));
+    Member memberToRemove = null;
+    for (Member member : members) {
+        if (member.getId().equals(id)) {
+            memberToRemove = member;
+            break;
+        }
+    }
+    if (memberToRemove != null) {
+        // Hapus semua buku yang dipinjam oleh member ini
+        ArrayList<Book> borrowedBooks = new ArrayList<>(memberToRemove.getBorrowedBooks());
+        for (Book book : borrowedBooks) {
+            books.remove(book);
+            totalBooks--;
+        }
+        // Hapus member dari daftar
+        members.remove(memberToRemove);
         totalMembers--;
+        saveBooks();
         saveMembers();
     }
+}
     
-    public static void addTransaction(String transactionId, Book book, Member member) {
-        Transaction transaction = new Transaction(transactionId, book, member);
-        transactions.add(transaction);
-        saveTransactions();
-    }
 
     public static ArrayList<Book> getBooks() {
         return books;

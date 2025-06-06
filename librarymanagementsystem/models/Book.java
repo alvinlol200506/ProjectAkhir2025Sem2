@@ -11,8 +11,8 @@ import librarymanagementsystem.interfaces.Borrowable;
  * @author Alvin
  */
 public class Book extends LibraryItem implements Borrowable {
-    private String id; // Enkapsulasi: private field
-    private String title;
+    private String id; // Enkapsulasi (private)
+    private String title; // details dari abstract class LibraryItem
     private boolean isBorrowed;
 
     // Constructor
@@ -40,13 +40,13 @@ public class Book extends LibraryItem implements Borrowable {
         this.title = title;
     }
 
-    // Implementasi metode abstrak dari LibraryItem (Polymorphism)
+    // Menggunakan metode abstrak dari LibraryItem (Polymorphism)
     @Override
     public String getDetails() {
         return "Book: " + title + " (ID: " + id + ")";
     }
 
-    // Implementasi metode dari interface Borrowable (Polymorphism)
+    // Menggunakan metode dari interface Borrowable (Polymorphism)
     @Override
     public void borrow() {
         this.isBorrowed = true;

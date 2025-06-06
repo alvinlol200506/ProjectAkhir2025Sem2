@@ -4,41 +4,32 @@
  */
 package librarymanagementsystem.models;
 import librarymanagementsystem.abstracts.LibraryItem;
-import java.util.ArrayList;
+
 /**
  *
  * @author Alvin
  */
 public class Member extends LibraryItem {
-    private ArrayList<Book> borrowedBooks;
+    private String id;
+    private String name;
 
     public Member(String id, String name) {
-        super(id, name); // Panggil konstruktor LibraryItem dengan id dan name
-        this.borrowedBooks = new ArrayList<>();
+        super(id, name); // Sesuai dengan konstruktor LibraryItem
+        this.id = id;
+        this.name = name;
     }
 
+    @Override
     public String getId() {
-        return id; // Gunakan id dari LibraryItem
+        return id;
     }
 
     public String getName() {
-        return details; // Gunakan details dari LibraryItem sebagai name
-    }
-
-    public ArrayList<Book> getBorrowedBooks() {
-        return borrowedBooks;
-    }
-
-    public void borrowBook(Book book) {
-        borrowedBooks.add(book);
-    }
-
-    public void returnBook(Book book) {
-        borrowedBooks.remove(book);
+        return name;
     }
 
     @Override
     public String getDetails() {
-        return "Member: " + details + " (ID: " + id + ")";
+        return "Member: " + name + " (ID: " + id + ")";
     }
 }

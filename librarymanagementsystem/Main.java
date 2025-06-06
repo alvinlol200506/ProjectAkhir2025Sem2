@@ -11,11 +11,11 @@ import javax.swing.UIManager;
  */
 public class Main {
     public static void main(String[] args){
-    UIManager.put("Button.focusPainted", Boolean.FALSE);
+    UIManager.put("Button.focusPainted", Boolean.FALSE); // ketika buttonnya dipencet tidak meninggalkan outline
 
-        // Run the GUI on the Event Dispatch Thread (EDT)
-        java.awt.EventQueue.invokeLater(() -> {
-            new LibraryUI().setVisible(true);
-        });
+    // menjalankan UInya
+    java.awt.EventQueue.invokeLater(() -> {
+        new LibraryUI().setVisible(true);
+    });
     }
 }

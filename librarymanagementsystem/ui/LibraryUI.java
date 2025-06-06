@@ -17,36 +17,33 @@ public class LibraryUI extends javax.swing.JFrame {
      */
     public LibraryUI() {
     initComponents();
-    // Muat data saat aplikasi dimulai
     librarymanagementsystem.services.LibraryService.loadData();
     updateBookTable();
     updateMemberTable();
     updateTotalBooksLabel();
     updateTotalMembersLabel();
 
-    // Tambah action listener untuk addMemberButton
     addMemberButton.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             addMemberButtonActionPerformed(evt);
         }
     });
-    
+
     removeBookButton.addActionListener(new java.awt.event.ActionListener() {
+        @Override
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             removeBookButtonActionPerformed(evt);
         }
     });
-    
-    // Simpan data saat aplikasi ditutup
-    addWindowListener(new java.awt.event.WindowAdapter() {
+
+    removeMemberButton.addActionListener(new java.awt.event.ActionListener() {
         @Override
-        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-            librarymanagementsystem.services.LibraryService.saveData();
-            System.exit(0);
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            removeMemberButtonActionPerformed(evt);
         }
     });
 
-    // Simpan data saat aplikasi ditutup
     addWindowListener(new java.awt.event.WindowAdapter() {
         @Override
         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -54,7 +51,7 @@ public class LibraryUI extends javax.swing.JFrame {
             System.exit(0);
         }
     });
-    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -85,7 +82,7 @@ public class LibraryUI extends javax.swing.JFrame {
         memberIDField = new javax.swing.JTextField();
         memberNameField = new javax.swing.JTextField();
         addMemberButton = new javax.swing.JButton();
-        javax.swing.JButton removeMemberButton = new javax.swing.JButton();
+        removeMemberButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         memberTable = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
@@ -206,9 +203,9 @@ public class LibraryUI extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(25, 25, 25)
                 .addComponent(bookTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bookIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -375,7 +372,6 @@ public class LibraryUI extends javax.swing.JFrame {
 
     if (id.isEmpty() || title.isEmpty()) {
         System.out.println("Validasi gagal: ID atau Title kosong");
-        JOptionPane.showMessageDialog(this, "Tolong diisi semua ya :)", "Bro ada yang belum diisi", JOptionPane.ERROR_MESSAGE);
         bookIDField.requestFocusInWindow();
     } else {
         System.out.println("Validasi sukses, menambah buku: " + id + ", " + title + ", " + type);
@@ -384,8 +380,7 @@ public class LibraryUI extends javax.swing.JFrame {
         updateTotalBooksLabel();
         bookIDField.setText("");
         bookTitleField.setText("");
-        bookIDField.requestFocusInWindow(); // Pastikan fokus pindah
-        bookTable.clearSelection(); // Bersihkan seleksi tabel
+        bookIDField.requestFocusInWindow();
     }
     }//GEN-LAST:event_addBookButtonActionPerformed
 
@@ -406,22 +401,23 @@ public class LibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_bookTypeComboBoxActionPerformed
 
     private void removeBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBookButtonActionPerformed
-    bookTable.requestFocusInWindow();
-    int selectedRow = bookTable.getSelectedRow();
-    System.out.println("Baris yang dipilih saat remove: " + selectedRow);
+    int selectedRow = memberTable.getSelectedRow();
+    System.out.println("Baris yang dipilih saat remove member: " + selectedRow);
     
     if (selectedRow == -1) {
-        System.out.println("Tidak ada baris dipilih, tidak melakukan apa-apa");
-        return; // Langsung return tanpa popup
+        System.out.println("Tidak ada member dipilih, tidak melakukan apa-apa");
+        return;
     }
 
-    String id = (String) bookTable.getValueAt(selectedRow, 0);
-    System.out.println("Menghapus buku dengan ID: " + id);
-    librarymanagementsystem.services.LibraryService.removeBook(id);
-    updateBookTable();
+    String id = (String) memberTable.getValueAt(selectedRow, 0); // Kolom ID
+    System.out.println("Menghapus member dengan ID: " + id);
+    librarymanagementsystem.services.LibraryService.removeMember(id);
+    updateMemberTable();
+    updateTotalMembersLabel();
+    updateBookTable(); // Perbarui tabel buku (meskipun tidak ada peminjaman)
     updateTotalBooksLabel();
-    bookTable.clearSelection();
-    bookIDField.requestFocusInWindow();
+    memberTable.clearSelection();
+    memberIDField.requestFocusInWindow();
     }//GEN-LAST:event_removeBookButtonActionPerformed
 
     private void removeMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMemberButtonActionPerformed
@@ -438,7 +434,7 @@ public class LibraryUI extends javax.swing.JFrame {
     librarymanagementsystem.services.LibraryService.removeMember(id);
     updateMemberTable();
     updateTotalMembersLabel();
-    updateBookTable(); // Perbarui tabel buku karena beberapa buku dihapus
+    updateBookTable(); // Perbarui tabel buku (meskipun tidak ada peminjaman)
     updateTotalBooksLabel();
     memberTable.clearSelection();
     memberIDField.requestFocusInWindow();
@@ -484,6 +480,7 @@ public class LibraryUI extends javax.swing.JFrame {
     private javax.swing.JTextField memberNameField;
     private javax.swing.JTable memberTable;
     private javax.swing.JButton removeBookButton;
+    private javax.swing.JButton removeMemberButton;
     private static javax.swing.JLabel totalBooksLabel;
     private static javax.swing.JLabel totalMembersLabel;
     // End of variables declaration//GEN-END:variables

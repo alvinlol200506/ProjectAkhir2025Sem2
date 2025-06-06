@@ -8,7 +8,7 @@ package librarymanagementsystem.abstracts;
  *
  * @author Alvin
  */
-public abstract class LibraryItem {
+public abstract class LibraryItem { // kelas abstrak
     protected String id;
     protected String details;
 

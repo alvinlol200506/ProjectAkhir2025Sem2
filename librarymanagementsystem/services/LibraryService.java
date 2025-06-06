@@ -19,10 +19,9 @@ public class LibraryService {
     private static final String BOOKS_FILE = "books.csv";
     private static final String MEMBERS_FILE = "members.csv";
 
-    // Muat data saat aplikasi mulai
     public static void loadData() {
-        loadBooks();
         loadMembers();
+        loadBooks();
     }
 
     public static void saveData() {
@@ -36,22 +35,32 @@ public class LibraryService {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 try {
-                    if (data.length == 3 && data[0].equals("novel")) {
-                        books.add(new Novel(data[1], data[2], "Unknown Author"));
-                        totalBooks++;
-                    } else if (data.length == 3 && data[0].equals("textbook")) {
+                    Book book = null;
+                    String memberId = data.length > 2 ? data[data.length - 1] : "";
+                    if (data.length >= 3 && data[0].equals("novel")) {
+                        book = new Novel(data[1], data[2], "Unknown Author");
+                    } else if (data.length >= 3 && data[0].equals("textbook")) {
                         try {
                             int edition = Integer.parseInt(data[2]);
-                            books.add(new Textbook(data[1], data[2], edition));
-                            totalBooks++;
+                            book = new Textbook(data[1], data[2], edition);
                         } catch (NumberFormatException e) {
                             System.out.println("Data textbook salah format: " + line + " | Diubah ke Book biasa");
-                            books.add(new Book(data[1], data[2]));
-                            totalBooks++;
+                            book = new Book(data[1], data[2]);
                         }
-                    } else if (data.length == 2) {
-                        books.add(new Book(data[0], data[1]));
+                    } else if (data.length >= 2) {
+                        book = new Book(data[0], data[1]);
+                    }
+                    if (book != null) {
+                        books.add(book);
                         totalBooks++;
+                        if (!memberId.isEmpty()) {
+                            for (Member member : members) {
+                                if (member.getId().equals(memberId)) {
+                                    book.borrow(member);
+                                    break;
+                                }
+                            }
+                        }
                     } else {
                         System.out.println("Baris tidak valid, dilewati: " + line);
                     }
@@ -64,15 +73,16 @@ public class LibraryService {
         }
     }
 
-    private static void saveBooks() {
+    public static void saveBooks() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKS_FILE))) {
             for (Book book : books) {
+                String memberId = book.isBorrowed() ? book.getBorrower().getId() : "";
                 if (book instanceof Novel) {
-                    writer.write("novel," + book.getId() + "," + book.getTitle());
+                    writer.write("novel," + book.getId() + "," + book.getTitle() + "," + memberId);
                 } else if (book instanceof Textbook) {
-                    writer.write("textbook," + book.getId() + "," + ((Textbook) book).getEdition());
+                    writer.write("textbook," + book.getId() + "," + ((Textbook) book).getEdition() + "," + memberId);
                 } else {
-                    writer.write(book.getId() + "," + book.getTitle());
+                    writer.write(book.getId() + "," + book.getTitle() + "," + memberId);
                 }
                 writer.newLine();
             }
@@ -96,7 +106,7 @@ public class LibraryService {
         }
     }
 
-    private static void saveMembers() {
+    public static void saveMembers() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(MEMBERS_FILE))) {
             for (Member member : members) {
                 writer.write(member.getId() + "," + member.getName());
@@ -151,9 +161,51 @@ public class LibraryService {
             }
         }
         if (memberToRemove != null) {
+            // Hapus member dari peminjaman buku
+            for (Book book : books) {
+                if (book.isBorrowed() && book.getBorrower().getId().equals(id)) {
+                    book.returnItem();
+                }
+            }
             members.remove(memberToRemove);
             totalMembers--;
             saveMembers();
+            saveBooks();
+        }
+    }
+
+    public static void borrowBook(String bookId, String memberId) {
+        Book bookToBorrow = null;
+        Member borrower = null;
+        for (Book book : books) {
+            if (book.getId().equals(bookId)) {
+                bookToBorrow = book;
+                break;
+            }
+        }
+        for (Member member : members) {
+            if (member.getId().equals(memberId)) {
+                borrower = member;
+                break;
+            }
+        }
+        if (bookToBorrow != null && borrower != null && !bookToBorrow.isBorrowed()) {
+            bookToBorrow.borrow(borrower);
+            saveBooks();
+        }
+    }
+
+    public static void returnBook(String bookId) {
+        Book bookToReturn = null;
+        for (Book book : books) {
+            if (book.getId().equals(bookId)) {
+                bookToReturn = book;
+                break;
+            }
+        }
+        if (bookToReturn != null && bookToReturn.isBorrowed()) {
+            bookToReturn.returnItem();
+            saveBooks();
         }
     }
 

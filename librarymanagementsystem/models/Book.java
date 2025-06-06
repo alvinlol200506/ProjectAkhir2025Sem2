@@ -5,33 +5,24 @@
 package librarymanagementsystem.models;
 
 import librarymanagementsystem.abstracts.LibraryItem;
-import librarymanagementsystem.interfaces.Borrowable;
+import librarymanagementsystem.interfaces.*;
 /**
  *
  * @author Alvin
  */
-public class Book extends LibraryItem implements Borrowable {
-    private String id; // Enkapsulasi (private)
-    private String title; // details dari abstract class LibraryItem
+public class Book extends LibraryItem implements Borrowable, Manageable {
+    protected String title;
     private boolean isBorrowed;
+    private Member borrower;
 
-    // Constructor
     public Book(String id, String title) {
-        super(id, title); // Memanggil constructor kelas abstrak
-        this.id = id;
+        super(id, title);
         this.title = title;
         this.isBorrowed = false;
+        this.borrower = null;
     }
 
-    // Getter dan Setter (Enkapsulasi)
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    @Override
     public String getTitle() {
         return title;
     }
@@ -40,24 +31,53 @@ public class Book extends LibraryItem implements Borrowable {
         this.title = title;
     }
 
-    // Menggunakan metode abstrak dari LibraryItem (Polymorphism)
     @Override
     public String getDetails() {
         return "Book: " + title + " (ID: " + id + ")";
     }
 
-    // Menggunakan metode dari interface Borrowable (Polymorphism)
     @Override
-    public void borrow() {
-        this.isBorrowed = true;
+    public void borrow(Member member) {
+        if (!isBorrowed) {
+            this.isBorrowed = true;
+            this.borrower = member;
+        }
     }
 
     @Override
     public void returnItem() {
         this.isBorrowed = false;
+        this.borrower = null;
     }
 
+    @Override
     public boolean isBorrowed() {
         return isBorrowed;
+    }
+
+    @Override
+    public Member getBorrower() {
+        return borrower;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void add() {
+        librarymanagementsystem.services.LibraryService.addBook(id, title, "Book");
+    }
+
+    @Override
+    public void remove() {
+        librarymanagementsystem.services.LibraryService.removeBook(id);
+    }
+
+    @Override
+    public void update() {
+        // Logika update akan memanggil saveBooks() setelah perubahan
+        librarymanagementsystem.services.LibraryService.saveBooks();
     }
 }

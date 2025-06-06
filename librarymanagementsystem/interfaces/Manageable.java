@@ -9,5 +9,8 @@ package librarymanagementsystem.interfaces;
  * @author Alvin
  */
 public interface Manageable {
-    
+    String getId();
+    void add();
+    void remove();
+    void update();
 }

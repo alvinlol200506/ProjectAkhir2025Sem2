@@ -19,59 +19,56 @@ public class LibraryService {
     private static final String BOOKS_FILE = "books.csv";
     private static final String MEMBERS_FILE = "members.csv";
 
-    public static void loadData() { // dipakai Book.java dan Member.java
-        loadMembers();
-        loadBooks();
+    public static void loadData() { // dipanggil oleh LibraryUI
+        loadMembers(); // dipakai Member.java
+        loadBooks(); // dipakai Book.java 
     }
 
-    public static void saveData() { // dipakai Book.java dan Member.java
-        saveBooks();
-        saveMembers();
+    public static void saveData() { // dipanggil oleh LibraryUI
+        saveBooks(); // dipakai Book.java
+        saveMembers(); // dipakai Member.java
     }
 
     private static void loadBooks() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(BOOKS_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+    try (BufferedReader reader = new BufferedReader(new FileReader(BOOKS_FILE))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] data = line.split(",");
+            if (data.length < 2) continue;
+
+            Book book = null;
+            String memberId = data.length > 2 ? data[data.length - 1] : "";
+
+            if ("novel".equalsIgnoreCase(data[0])) {
+                book = new Novel(data[1], data[2], "Unknown Author");
+            } else if ("textbook".equalsIgnoreCase(data[0])) {
                 try {
-                    Book book = null;
-                    String memberId = data.length > 2 ? data[data.length - 1] : "";
-                    if (data.length >= 3 && data[0].equals("novel")) {
-                        book = new Novel(data[1], data[2], "Unknown Author");
-                    } else if (data.length >= 3 && data[0].equals("textbook")) {
-                        try {
-                            int edition = Integer.parseInt(data[2]);
-                            book = new Textbook(data[1], data[2], edition);
-                        } catch (NumberFormatException e) {
-                            System.out.println("Data textbook salah format: " + line + " | Diubah ke Book biasa");
-                            book = new Book(data[1], data[2]);
+                    int edition = Integer.parseInt(data.length > 3 ? data[3] : "1");
+                    book = new Textbook(data[1], data[2], edition);
+                } catch (NumberFormatException e) {
+                    book = new Book(data[1], data[2]);
+                }
+            } else if (data.length >= 2) {
+                book = new Book(data[0], data[1]);
+            }
+
+            if (book != null) {
+                books.add(book);
+                totalBooks++;
+                if (!memberId.isEmpty()) {
+                    for (Member member : members) {
+                        if (member.getId().equals(memberId)) {
+                            book.borrow(member);
+                            break;
                         }
-                    } else if (data.length >= 2) {
-                        book = new Book(data[0], data[1]);
                     }
-                    if (book != null) {
-                        books.add(book);
-                        totalBooks++;
-                        if (!memberId.isEmpty()) {
-                            for (Member member : members) {
-                                if (member.getId().equals(memberId)) {
-                                    book.borrow(member);
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        System.out.println("Baris tidak valid, dilewati: " + line);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error parsing book: " + line + " | " + e.getMessage());
                 }
             }
-        } catch (IOException e) {
-            // File belum ada saat pertama kali, ini normal
         }
+    } catch (IOException e) {
+        
     }
+}
 
     public static void saveBooks() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKS_FILE))) {

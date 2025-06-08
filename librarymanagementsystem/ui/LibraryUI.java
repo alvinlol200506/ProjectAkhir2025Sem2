@@ -17,6 +17,8 @@ public class LibraryUI extends javax.swing.JFrame {
      */
     public LibraryUI() {
     initComponents();
+    setLocationRelativeTo(null);
+    setTitle("Management Perpustakaan PINJAMBUKU");
     librarymanagementsystem.services.LibraryService.loadData();
     updateBookTable();
     updateMemberTable();
@@ -25,7 +27,6 @@ public class LibraryUI extends javax.swing.JFrame {
     updateMemberComboBox();
     updateBorrowingTable();
 
-    
 
     removeBookButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -401,18 +402,23 @@ public class LibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_memberNameFieldActionPerformed
 
     private void addMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMemberButtonActionPerformed
+    System.out.println("addMemberButtonActionPerformed dipanggil");
     String id = memberIDField.getText().trim();
     String name = memberNameField.getText().trim();
 
-    
     if (id.isEmpty() || name.isEmpty()) {
-        memberIDField.requestFocusInWindow(); // Pindah fokus ke memberIdField
+        System.out.println("Validasi gagal: ID atau Name kosong");
+        JOptionPane.showMessageDialog(this, "Tolong diisi semua ya :)", "Bro ada yang belum diisi", JOptionPane.ERROR_MESSAGE);
+        memberIDField.requestFocusInWindow();
     } else {
+        System.out.println("Validasi sukses, menambah member: " + id + ", " + name);
         librarymanagementsystem.services.LibraryService.addMember(id, name);
         updateMemberTable();
         updateTotalMembersLabel();
+        updateMemberComboBox(); // Tambah ini untuk memperbarui combo box
         memberIDField.setText("");
         memberNameField.setText("");
+        memberIDField.requestFocusInWindow();
     }
     }//GEN-LAST:event_addMemberButtonActionPerformed
 
@@ -485,19 +491,13 @@ public class LibraryUI extends javax.swing.JFrame {
     private void removeMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMemberButtonActionPerformed
     int selectedRow = memberTable.getSelectedRow();
     System.out.println("Baris yang dipilih saat remove member: " + selectedRow);
-    
-    if (selectedRow == -1) {
-        System.out.println("Tidak ada member dipilih, tidak melakukan apa-apa");
-        return;
-    }
 
     String id = (String) memberTable.getValueAt(selectedRow, 0); // Kolom ID
     System.out.println("Menghapus member dengan ID: " + id);
     librarymanagementsystem.services.LibraryService.removeMember(id);
     updateMemberTable();
     updateTotalMembersLabel();
-    updateBookTable(); // Perbarui tabel buku (meskipun tidak ada peminjaman)
-    updateTotalBooksLabel();
+    updateMemberComboBox(); // Tambah ini untuk memperbarui combo box
     memberTable.clearSelection();
     memberIDField.requestFocusInWindow();
     }//GEN-LAST:event_removeMemberButtonActionPerformed
@@ -511,10 +511,6 @@ public class LibraryUI extends javax.swing.JFrame {
 
     String bookId = (String) bookTable.getValueAt(selectedRow, 0);
     String memberSelection = (String) memberComboBox.getSelectedItem();
-    if (memberSelection.equals("Pilih member")) {
-        JOptionPane.showMessageDialog(this, "Pilih member terlebih dahulu!");
-        return;
-    }
 
     String memberId = memberSelection.split(" - ")[0];
     librarymanagementsystem.services.LibraryService.borrowBook(bookId, memberId);
@@ -542,7 +538,7 @@ public class LibraryUI extends javax.swing.JFrame {
         totalBooksLabel.setText("Total Books: " + librarymanagementsystem.services.LibraryService.getTotalBooks());
     }
     
-    private void updateMemberComboBox() {
+   private void updateMemberComboBox() {
     memberComboBox.removeAllItems();
     memberComboBox.addItem("Pilih member");
     for (Member member : librarymanagementsystem.services.LibraryService.getMembers()) {

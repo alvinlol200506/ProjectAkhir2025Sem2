@@ -22,16 +22,17 @@ public class Book extends LibraryItem implements Borrowable, Manageable {
         this.isBorrowed = false;
         this.borrower = null;
     }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
     
     @Override
     public String getTitle() { // dari abstrak LibraryItem.java
         return title;
     }
 
+    @Override
+    public String getId() { // dari abstrak LibraryItem.java
+        return id;
+    }
+    
     @Override
     public String getDetails() { // dari abstrak LibraryItem.java
         return "Book: " + title + " (ID: " + id + ")";
@@ -59,11 +60,6 @@ public class Book extends LibraryItem implements Borrowable, Manageable {
     @Override
     public Member getBorrower() { // dari interface Borrowable.java
         return borrower;
-    }
-
-    @Override
-    public String getId() { // dari abstrak LibraryItem.java
-        return id;
     }
 
     @Override

@@ -51,8 +51,8 @@
         <Container class="javax.swing.JPanel" name="jPanel1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="mainMenuPanel">
-                <Property name="tabTitle" type="java.lang.String" value="mainMenuPanel"/>
+              <JTabbedPaneConstraints tabName="Main Menu">
+                <Property name="tabTitle" type="java.lang.String" value="Main Menu"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -191,8 +191,8 @@
         <Container class="javax.swing.JPanel" name="jPanel2">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="bookManagementPanel">
-                <Property name="tabTitle" type="java.lang.String" value="bookManagementPanel"/>
+              <JTabbedPaneConstraints tabName="Book Management">
+                <Property name="tabTitle" type="java.lang.String" value="Book Management"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -341,7 +341,7 @@
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="3">
                     <StringItem index="0" value="Book"/>
-                    <StringItem index="1" value="Novels"/>
+                    <StringItem index="1" value="Novel"/>
                     <StringItem index="2" value="Textbook"/>
                   </StringArray>
                 </Property>
@@ -389,8 +389,8 @@
         <Container class="javax.swing.JPanel" name="jPanel3">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="memberManagementPanel">
-                <Property name="tabTitle" type="java.lang.String" value="memberManagementPanel"/>
+              <JTabbedPaneConstraints tabName="Member Management">
+                <Property name="tabTitle" type="java.lang.String" value="Member Management"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

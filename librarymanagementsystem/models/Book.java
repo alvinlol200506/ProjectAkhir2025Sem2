@@ -4,6 +4,7 @@
  */
 package librarymanagementsystem.models;
 
+// import foldernya
 import librarymanagementsystem.abstracts.LibraryItem;
 import librarymanagementsystem.interfaces.*;
 /**
@@ -16,28 +17,28 @@ public class Book extends LibraryItem implements Borrowable, Manageable {
     private Member borrower;
 
     public Book(String id, String title) {
-        super(id, title);
+        super(id, title); // merujuk ke LibraryItem
         this.title = title;
         this.isBorrowed = false;
         this.borrower = null;
     }
 
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
+    
+    @Override
+    public String getTitle() { // dari abstrak LibraryItem.java
+        return title;
+    }
 
     @Override
-    public String getDetails() {
+    public String getDetails() { // dari abstrak LibraryItem.java
         return "Book: " + title + " (ID: " + id + ")";
     }
 
     @Override
-    public void borrow(Member member) {
+    public void borrow(Member member) { // dari interface Borrowable.java
         if (!isBorrowed) {
             this.isBorrowed = true;
             this.borrower = member;
@@ -45,39 +46,38 @@ public class Book extends LibraryItem implements Borrowable, Manageable {
     }
 
     @Override
-    public void returnItem() {
+    public void returnItem() { // dari interface Borrowable.java
         this.isBorrowed = false;
         this.borrower = null;
     }
 
     @Override
-    public boolean isBorrowed() {
+    public boolean isBorrowed() { // dari interface Borrowable.java
         return isBorrowed;
     }
 
     @Override
-    public Member getBorrower() {
+    public Member getBorrower() { // dari interface Borrowable.java
         return borrower;
     }
 
     @Override
-    public String getId() {
+    public String getId() { // dari abstrak LibraryItem.java
         return id;
     }
 
     @Override
-    public void add() {
+    public void add() { // dari interface Manageable.java
         librarymanagementsystem.services.LibraryService.addBook(id, title, "Book");
     }
 
     @Override
-    public void remove() {
+    public void remove() { // dari interface Manageable.java
         librarymanagementsystem.services.LibraryService.removeBook(id);
     }
 
     @Override
-    public void update() {
-        // Logika update akan memanggil saveBooks() setelah perubahan
+    public void update() { // dari interface Manageable.java
         librarymanagementsystem.services.LibraryService.saveBooks();
     }
 }

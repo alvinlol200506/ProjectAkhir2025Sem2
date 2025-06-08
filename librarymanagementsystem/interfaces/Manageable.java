@@ -8,7 +8,7 @@ package librarymanagementsystem.interfaces;
  *
  * @author Alvin
  */
-public interface Manageable {
+public interface Manageable { // kelas interface kedua
     String getId();
     void add();
     void remove();

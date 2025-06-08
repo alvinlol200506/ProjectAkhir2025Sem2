@@ -11,7 +11,7 @@ import javax.swing.UIManager;
  */
 public class Main {
     public static void main(String[] args){
-    UIManager.put("Button.focusPainted", Boolean.FALSE); // ketika buttonnya dipencet tidak meninggalkan outline
+    UIManager.put("Button.focusPainted", Boolean.FALSE); // ketika button (semua button di GUI) dipencet tidak meninggalkan outline
 
     // menjalankan UInya
     java.awt.EventQueue.invokeLater(() -> {

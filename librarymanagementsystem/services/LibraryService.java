@@ -19,12 +19,12 @@ public class LibraryService {
     private static final String BOOKS_FILE = "books.csv";
     private static final String MEMBERS_FILE = "members.csv";
 
-    public static void loadData() {
+    public static void loadData() { // dipakai Book.java dan Member.java
         loadMembers();
         loadBooks();
     }
 
-    public static void saveData() {
+    public static void saveData() { // dipakai Book.java dan Member.java
         saveBooks();
         saveMembers();
     }

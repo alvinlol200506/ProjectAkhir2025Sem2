@@ -9,7 +9,7 @@ import librarymanagementsystem.models.Member;
  *
  * @author Alvin
  */
-public interface Borrowable {
+public interface Borrowable { // kelas interface (requirment untuk project akhir)
     void borrow(Member member);
     void returnItem();
     boolean isBorrowed();

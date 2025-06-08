@@ -25,11 +25,7 @@ public class LibraryUI extends javax.swing.JFrame {
     updateMemberComboBox();
     updateBorrowingTable();
 
-    addMemberButton.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            addMemberButtonActionPerformed(evt);
-        }
-    });
+    
 
     removeBookButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -173,7 +169,7 @@ public class LibraryUI extends javax.swing.JFrame {
                 .addGap(89, 89, 89))
         );
 
-        jTabbedPane1.addTab("mainMenuPanel", jPanel1);
+        jTabbedPane1.addTab("Main Menu", jPanel1);
 
         addBookButton.setText("Add Book");
         addBookButton.addActionListener(new java.awt.event.ActionListener() {
@@ -203,7 +199,7 @@ public class LibraryUI extends javax.swing.JFrame {
 
         jLabel6.setText("Title");
 
-        bookTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Book", "Novels", "Textbook" }));
+        bookTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Book", "Novel", "Textbook" }));
         bookTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bookTypeComboBoxActionPerformed(evt);
@@ -291,7 +287,7 @@ public class LibraryUI extends javax.swing.JFrame {
                 .addGap(15, 15, 15))
         );
 
-        jTabbedPane1.addTab("bookManagementPanel", jPanel2);
+        jTabbedPane1.addTab("Book Management", jPanel2);
 
         memberNameField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -376,7 +372,7 @@ public class LibraryUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("memberManagementPanel", jPanel3);
+        jTabbedPane1.addTab("Member Management", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -511,11 +507,7 @@ public class LibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_memberComboBoxActionPerformed
 
     private void borrowBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrowBookButtonActionPerformed
-        int selectedRow = bookTable.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Pilih buku terlebih dahulu!");
-        return;
-    }
+    int selectedRow = bookTable.getSelectedRow();
 
     String bookId = (String) bookTable.getValueAt(selectedRow, 0);
     String memberSelection = (String) memberComboBox.getSelectedItem();
@@ -531,11 +523,8 @@ public class LibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_borrowBookButtonActionPerformed
 
     private void returnBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBookButtonActionPerformed
-        int selectedRow = bookTable.getSelectedRow();
-    if (selectedRow == -1) {
-        System.out.println("Tidak ada buku dipilih untuk dikembalikan");
-        return;
-    }
+    int selectedRow = bookTable.getSelectedRow();
+        
     String bookId = (String) bookTable.getValueAt(selectedRow, 0);
     librarymanagementsystem.services.LibraryService.returnBook(bookId);
     updateBorrowingTable();

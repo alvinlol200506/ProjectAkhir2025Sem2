@@ -15,8 +15,12 @@ public class Member extends LibraryItem implements Manageable {
         super(id, name);
     }
 
+    public void setName(String name) {
+        this.details = name;
+    }
+
     @Override
-    public String getId() {
+    public String getId() { // dari abstrak LibraryItem.java
         return id;
     }
 
@@ -24,27 +28,23 @@ public class Member extends LibraryItem implements Manageable {
         return details;
     }
 
-    public void setName(String name) {
-        this.details = name;
-    }
-
     @Override
-    public String getDetails() {
+    public String getDetails() { // dari abstrak LibraryItem.java
         return "Member: " + details + " (ID: " + id + ")";
     }
 
     @Override
-    public void add() {
+    public void add() { // dari interface Manageable.java
         librarymanagementsystem.services.LibraryService.addMember(id, details);
     }
 
     @Override
-    public void remove() {
+    public void remove() { // dari interface Manageable.java
         librarymanagementsystem.services.LibraryService.removeMember(id);
     }
 
     @Override
-    public void update() {
+    public void update() { // dari interface Manageable.java
         librarymanagementsystem.services.LibraryService.saveMembers();
     }
 }

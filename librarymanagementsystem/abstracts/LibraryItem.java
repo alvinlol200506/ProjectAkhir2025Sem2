@@ -8,7 +8,7 @@ package librarymanagementsystem.abstracts;
  *
  * @author Alvin
  */
-public abstract class LibraryItem { // kelas abstrak
+public abstract class LibraryItem { // kelas abstrak (requirment untuk project akhir)
     protected String id;
     protected String details;
 
@@ -25,6 +25,6 @@ public abstract class LibraryItem { // kelas abstrak
         return details;
     }
 
-    // Metode abstrak untuk polymorphism
+    // Metode abstrak untuk polymorphism (requirment untuk project akhir)
     public abstract String getDetails();
 }

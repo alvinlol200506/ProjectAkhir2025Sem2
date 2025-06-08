@@ -8,11 +8,11 @@ package librarymanagementsystem.models;
  *
  * @author Alvin
  */
-public class Textbook extends Book {
+public class Textbook extends Book { // anak kelas dari Book
     private int edition;
 
     public Textbook(String id, String title, int edition) {
-        super(id, title); // Memanggil constructor Book
+        super(id, title); // Dari parent class Book
         this.edition = edition;
     }
 
@@ -25,7 +25,7 @@ public class Textbook extends Book {
     }
 
     @Override
-    public String getDetails() {
+    public String getDetails() { // dari parent class Book yang menggunakan abstract class LibraryItem
         return "Textbook: " + getTitle() + " (Edition: " + edition + ", ID: " + getId() + ")";
     }
 }

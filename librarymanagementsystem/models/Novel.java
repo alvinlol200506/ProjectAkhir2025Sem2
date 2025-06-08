@@ -8,11 +8,11 @@ package librarymanagementsystem.models;
  *
  * @author Alvin
  */
-public class Novel extends Book {
+public class Novel extends Book { // anak kelas dari Book
     private String author;
 
     public Novel(String id, String title, String author) {
-        super(id, title); // Memanggil constructor Book
+        super(id, title); // Dari parent class Book
         this.author = author;
     }
 
@@ -25,7 +25,7 @@ public class Novel extends Book {
     }
 
     @Override
-    public String getDetails() {
+    public String getDetails() { // dari parent class Book yang menggunakan abstract class LibraryItem
         return "Novel: " + getTitle() + " by " + author + " (ID: " + getId() + ")";
     }
 }
